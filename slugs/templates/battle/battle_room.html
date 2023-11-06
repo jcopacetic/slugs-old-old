@@ -1,0 +1,325 @@
+{% extends "../base.html" %}
+{% load static %}
+
+{% block content %}
+    <h1>Battle Room</h1>
+
+    <div class="battle-box bg-dark text-light p-2" style="position: relative; height: 400px; width: 600px;">
+        <div class="bb-scene" style="position: relative; width: 100%; height: 270px; background: url({% static 'images/battle/bb-bg.png' %}) center center no-repeat; background-size: cover;">
+            <div class="bb-op-1">
+                <div class="row g-0">
+                    <div class="col">
+                        <div class="bb-caddy rounded p-1 bg-light text-dark" style="max-width: 220px;">
+                            <div class="row g-0">
+                                <div class="col">
+                                    <p><strong class="bb-name">Pet Name</strong></p>
+                                </div>
+                                <div class="col text-end">
+                                    Lv. <strong>30</strong>
+                                </div>
+                            </div>
+                            <div class="row g-0">
+                                <div class="col">
+                                    <div class="bb-hp row g-0">
+                                        <div class="col-2">
+                                            HP <span class="bb-hp-num"></span>
+                                        </div>
+                                        <div class="col bb-hp-bar bg-dark" style="height: 16px; width: 100%;">
+                                            <div class="bg-primary" style="height: 12px; width: 80%;"></div>     
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col" style="position: relative;">
+                        <img  style="height: 98px; position: absolute; left: 50%; transform: translateX(-20%); top: 10px;" src="{% static 'images/monsters/slug-1.png' %}" alt="#">
+                    </div>
+                </div>
+
+            </div>
+            <div class="bb-op-2">
+                <div class="row g-0" style="position: absolute; bottom: 8px; left: 8px; right: 8px;">
+                    <div class="col" style="position: relative;">
+                        <img  style="height: 160px; position: absolute; left: 50%; transform: translateX(-50%); bottom: 8px;" src="{% static 'images/monsters/slug-1.png' %}" alt="#">
+                    </div>
+                    <div class="col">
+                        <div class="bb-caddy rounded p-1 bg-light text-dark" style="max-width: 220px; margin-left: auto; margin-right: 0; margin-bottom: 12px;">
+                            <div class="row g-0">
+                                <div class="col">
+                                    <p><strong class="bb-name">Pet Name</strong></p>
+                                </div>
+                                <div class="col text-end">
+                                    Lv. <strong>30</strong>
+                                </div>
+                            </div>
+                            <div class="row g-0">
+                                <div class="col">
+                                    <div class="bb-hp row g-0">
+                                        <div class="col-2">
+                                            HP <span class="bb-hp-num"></span>
+                                        </div>
+                                        <div class="col bb-hp-bar bg-dark" style="height: 16px; width: 100%;">
+                                            <div class="bg-primary" style="height: 12px; width: 80%;"></div>     
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        <div class="bb-panel bg-light rounded p-1" style="position: absolute; bottom: 8px; left: 8px; right: 8px;">
+            <div  class="row p-2 g-0" style="height: 104px; width: 100%; background: #333;">
+                <div class="col">
+                    <p class="bb-prompt">BATTLE has STARTED!<br>
+                    Your turn...</p>
+                </div>
+                <div class="col">
+                    <div class="bb-controls rounded p-1 bg-dark" style="width: 100%; height: 88px;">
+                        <style>
+                            .bb-panel::-webkit-scrollbar {
+                                width: 8px;
+                                border-radius: 8px;
+                            }
+                            
+                            .bb-panel::-webkit-scrollbar-track {
+                                box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+                                background: var(--bs-gray-500);
+                            }
+                            
+                            .bb-panel::-webkit-scrollbar-thumb {
+                                background-color: #0d6efd;
+                                outline: 0;
+                                border-radius: 8px;
+                            }
+                        </style>
+
+                        <div class="bb-panel bb-control-wrapper">
+                            <div class="row g-0">
+                                <div class="col rounded border border-dark">
+                                    <a data-action="open_moves" class="bb-btn btn btn-primary" style="width: 100%;" href="#">Moves</a>
+                                </div>
+                                <div class="col rounded border border-dark">
+                                    <a data-action="open_items" class="btn btn-secondary bb-btn" style="width: 100%;" href="#">Items</a>
+                                </div>
+                            </div>
+                            <div class="row g-0">
+                                <div class="col rounded border border-dark">
+                                    <a class="" style="width: 100%;" href="#"></a>
+                                </div>
+                                <div class="col rounded border border-dark">
+                                    <a  data-action="forfeit" class="btn btn-danger bb-btn" style="width: 100%;" href="#">Forfeit</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bb-panel bb-moves-wrapper" style="display: none;">
+                            <div class="row g-0">
+                                <div class="col">
+                                    <a data-action="open_options" class="bb-btn btn btn-sm btn-danger p-0" style="font-size: 12px; line-height: 1;" href="#">back</a>
+                                </div>
+                            </div>
+                            <div class="bb-moves-list row g-0 row-cols-md-2">
+                                <div class="col rounded border border-dark">
+                                    <a data-action="make_move" data-id="1" class="bb-btn col btn btn-sm text-dark rounded bg-warning" style="width: 100%; line-height: 1.2;" href="#">Move 1</a>
+                                </div>
+                                <div class="col rounded border border-dark">
+                                    <a data-action="make_move" data-id="2"  class="col btn btn-sm text-dark rounded bg-warning" style="width: 100%; line-height: 1.2;" href="#">Move 2</a>
+                                </div>
+                                <div class="col rounded border border-dark">
+                                    <a data-action="make_move" data-id="3" class="col btn btn-sm text-dark rounded bg-warning" style="width: 100%; line-height: 1.2;" href="#">Move 3</a>
+                                </div>
+                                <div class="col rounded border border-dark">
+                                    <a data-action="make_move" data-id="4" class="col btn btn-sm text-dark rounded bg-warning" style="width: 100%; line-height: 1.2;" href="#">Move 4</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bb-panel bb-items-wrapper" style="overflow-y: scroll; height: 88px; position: relative; display: none;">
+                            <a data-action="open_options" class="bb-btn btn btn-sm btn-danger p-0" style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 1000;" href="#">back</a>
+                            <div class="row g-0">
+                                <div class="col">
+                                    <ul style="padding: 0; margin: 30px 0 0 0; list-style: none;">
+                                        <li class="row g-0"><div class="col-2">x10</div><div class="col"><strong>item 1</strong></div><div class="col-2"><a data-action="use_item" data-id="1" class="bb-btn btn btn-primary btn-sm p-1 mb-2" style="line-height: 1;" href="#">use</a></div></li>
+                                        <li class="row g-0"><div class="col-2">x10</div><div class="col"><strong>item 1</strong></div><div class="col-2"><a data-action="use_item" data-id="2" class="bb-btn btn btn-primary btn-sm p-1 mb-2" style="line-height: 1;" href="#">use</a></div></li>
+                                        <li class="row g-0"><div class="col-2">x10</div><div class="col"><strong>item 1</strong></div><div class="col-2"><a data-action="use_item" data-id="3" class="bb-btn btn btn-primary btn-sm p-1 mb-2" style="line-height: 1;" href="#">use</a></div></li>
+                                        <li class="row g-0"><div class="col-2">x10</div><div class="col"><strong>item 1</strong></div><div class="col-2"><a data-action="use_item" data-id="3" class="bb-btn btn btn-primary btn-sm p-1 mb-2" style="line-height: 1;" href="#">use</a></div></li>
+                                        <li class="row g-0"><div class="col-2">x10</div><div class="col"><strong>item 1</strong></div><div class="col-2"><a data-action="use_item" data-id="4" class="bb-btn btn btn-primary btn-sm p-1 mb-2" style="line-height: 1;" href="#">use</a></div></li>
+                                        <li class="row g-0"><div class="col-2">x10</div><div class="col"><strong>item 1</strong></div><div class="col-2"><a data-action="use_item" data-id="5" class="bb-btn btn btn-primary btn-sm p-1 mb-2" style="line-height: 1;" href="#">use</a></div></li>
+                                        <li class="row g-0"><div class="col-2">x10</div><div class="col"><strong>item 1</strong></div><div class="col-2"><a data-action="use_item" data-id="6" class="bb-btn btn btn-primary btn-sm p-1 mb-2" style="line-height: 1;" href="#">use</a></div></li>
+                                        <li class="row g-0"><div class="col-2">x10</div><div class="col"><strong>item 1</strong></div><div class="col-2"><a data-action="use_item" data-id="7" class="bb-btn btn btn-primary btn-sm p-1 mb-2" style="line-height: 1;" href="#">use</a></div></li>
+                                        <li class="row g-0"><div class="col-2">x10</div><div class="col"><strong>item 1</strong></div><div class="col-2"><a data-action="use_item" data-id="8" class="bb-btn btn btn-primary btn-sm p-1 mb-2" style="line-height: 1;" href="#">use</a></div></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bb-panel bb-forfeit-wrapper" style="overflow-y: scroll; height: 88px; position: relative; display: none;">
+                            <a data-action="open_options" class="bb-btn btn btn-sm btn-danger p-0" style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 1000;" href="#">back</a>
+                            <div class="row g-0">
+                                <div class="col">
+                                    <div class="text-center pt-4">
+                                        <h6 class="text-light">are you sure you want to quit?</h6>
+                                        <a action="forfeit" class="bb-btn btn btn-sm btn-danger p-1" href="#">give up</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block inline_javascript %}
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function() {
+
+        let roomID = "{{ battle.id }}"
+        let url = `ws://localhost:8000/ws/battle/${roomID}/`
+        const chatSocket = new WebSocket(url) 
+
+        chatSocket.onopen = function() {
+            console.log('WebSocket connection established.')
+        }
+
+        var actionBtns = document.querySelectorAll(".bb-btn"),
+            prompt = document.querySelector('.bb-prompt'),
+            touchTypes = ["click", "touch"]
+
+        actionBtns.forEach(function(button) {
+            touchTypes.forEach(function(type) {
+                button.addEventListener(type, function(e) {
+                    actionBtnHandler(e, chatSocket);
+                });
+            });
+        });
+
+        typeWriter(prompt, text="BATTLE has STARTED!\nYour turn...")
+
+        
+        chatSocket.onmessage = function(e) {
+            let data = JSON.parse(e.data)
+            console.log('Data', data)
+            console.log(data.type)
+            if (data.type === 'battle_load') {
+                let moves_list = document.querySelector('.bb-moves-list'),
+                    op_1 = document.querySelector('.bb-op-1'),
+                    op_2 = document.querySelector('.bb-op-2')
+                
+                op_1.querySelector('.bb-hp-num').innerHTML = `${data.op_1.health}`
+                op_1.querySelector('.bb-name').innerHTML = `${data.op_1.name}`
+                
+                op_2.querySelector('.bb-hp-num').innerHTML = `${data.op_2.health}`
+                op_2.querySelector('.bb-name').innerHTML = `${data.op_2.name}`     
+                
+                let moves = data.op_1.moves 
+
+                moves_list.innerHTML = ''
+
+                for (let i = 0; i < Object.keys(moves).length; i++) {
+                    let container = document.createElement('div'),
+                        container_classes = ['col', 'rounded', 'border', 'border-dark'],
+                        btn = document.createElement('a'),
+                        btn_classes = ['bb-btn', 'col', 'btn', 'btn-sm', 'text-dark', 'rounded', 'bg-warning']
+                        
+                    btn.dataset.action = "make_move"    
+                    btn.dataset.id = moves[i].id
+                    btn.style.width = '100%'
+                    btn.style.lineHeight = '1.2'
+                    btn.classList.add(...btn_classes)
+                    btn.addEventListener('click', (e) => actionBtnHandler(e, chatSocket))
+                    btn_text = document.createTextNode(moves[i].name)
+                    btn.appendChild(btn_text)
+
+                    container.classList.add(...container_classes)
+                    container.appendChild(btn)
+                    
+                    moves_list.appendChild(container)
+                }
+
+            }
+        }
+    });
+
+    
+
+    function actionBtnHandler(e, chatsocket) {
+        e.preventDefault();
+
+        var controls = e.currentTarget.closest('.bb-controls'),
+            controlsPanel = controls.querySelector('.bb-control-wrapper'),
+            movesPanel = controls.querySelector('.bb-moves-wrapper'),
+            itemsPanel = controls.querySelector('.bb-items-wrapper'),
+            forfeitPanel = controls.querySelector('.bb-forfeit-wrapper'),
+
+            action = e.currentTarget.dataset.action
+
+        if (["open_options", "open_moves", "forfeit"].includes(action)) {
+            controlsPanel.style.display = action === "open_options" ? "block" : "none"
+            movesPanel.style.display = action === 'open_moves' ? "block" : "none"
+            itemsPanel.style.display = action === 'open_items' ? "block" : "none"
+            forfeitPanel.style.display = action === 'forfeit' ? "block" : "none"
+        }
+
+        if (["make_move", "use_item", "forfeit"].includes(action)) {
+            var data = {
+                action: action,
+            }
+
+            if (action === "make_move") {
+                data["move_id"] = e.currentTarget.dataset.id
+                if (chatsocket.readyState === WebSocket.OPEN){
+                    chatsocket.send(JSON.stringify(data))
+                    console.log('sent')
+                } else {
+                    console.error('WebSocket connection is not open.')
+                }
+                console.log(data)
+            }
+
+            if (action === "use_item") {
+                data["item_id"] = e.currentTarget.dataset.id
+                console.log(data)
+            }
+
+            if (action === "forfeit") {
+                console.log(data)
+            }
+        }
+    }
+
+    function typeWriter(elem, text='') {
+        var i = 0,
+            speed = 50,
+            text = text
+        
+        elem.innerHTML = "";
+
+        function type() {
+            if (i < text.length) {
+                var char = text.charAt(i);
+                if (char === '\n') {
+                    elem.innerHTML += "<br>"; // Insert line break
+                } else {
+                    elem.innerHTML += char;
+                }
+                i++;
+                setTimeout(type, speed);
+            }
+        }
+        type();
+    }
+
+</script>
+
+
+{% endblock inline_javascript %}

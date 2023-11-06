@@ -1,0 +1,301 @@
+{% extends "../base.html" %}
+{% load static %}
+
+{% block content %}
+    
+    <ul class="nav">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'dashboard:dashboard' %}"><h2>Dashboard</h2></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'world:world' %}"><h2>World</h2></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'battle:board' %}"><h2>Battle</h2></a>
+        </li>
+      </ul>
+    <div class="container mt-5">
+        {% block dash %}
+            <div class="row">
+                <div class="col-8 pe-5">
+                    <div class="row border">
+                        <div class="col p-4 bg-dark text-light rounded">
+                            <div class="row">
+                                <div class="col">
+                                    <h4>wallet</h4>
+                                </div>
+                                <div class="col-2">
+                                    <a class="ms-3 btn btn-sm btn-primary" href="#">ledger</a>
+                                </div>
+                            </div>
+                            <p class="align-middle"><large class="fs-1">{{dashboard.wallet.currency}}</large> G</p>
+                        </div>
+                    </div>
+                    <div class="row mt-3 border border-dark rounded bg-light">
+                        <div class="col p-3">
+                            <h4 class="p-0">Your Inventory</h4>
+                            <div class="row row-cols-1 row-cols-md-6 g-4 mt-1 p-3">
+                                {% for item in inventory %}
+                                    <div class="inventory-item col-2 border border-dark text-dark bg-light rounded p-2 me-1">
+                                        <img class="img-thumbnail" src="{% static item.item.get_avatar_url %}" alt="#">
+                                        <h5>{% if item.currencyitem %}{{item.currencyitem.amount}}{% endif %}{% if item.chestitem %}{{item.chestitem.random_number}}{% endif %} {{item.item.name}}</h5>
+                                        <p>{{item.item.description}}</p>
+                                        {% if item.chestitem %}
+                                            <a class="btn btn-sm btn-danger move-btn" data-action="open_chest"  data-itemId="{{item.chestitem.id}}" href="#">Open Chest</a>
+                                        {% endif %}
+                                        {% if item.currencyitem %}
+                                        <a class="btn btn-sm btn-danger move-btn" data-action="open_currency"  data-itemId="{{item.currencyitem.id}}" href="#">Use</a>
+                                        {% endif %}
+                                        {% if item.slugitem %}
+                                            <a class="btn btn-sm btn-danger move-btn" data-action="open_slug"  data-itemId="{{item.slugitem.id}}" href="#">Reveal Slug</a>
+                                        {% endif %}
+                                        <a class="btn btn-sm btn-primary move-btn" data-action="move_to_shop"  data-itemId="{{item.id}}" href="#">add to shop</a>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="row border border-dark pe-3 ps-3 pb-3 pt-1 mb-3 bg-secondary text-light rounded">
+                        <h4 class="p-0">Your Slugs</h4>
+                        <div class="row row-cols-1 row-cols-md-2 g-8 mt-1">
+                            {% for item in dashboard.pets.all %}
+                                <div class="col p-2 border border-dark text-dark bg-light rounded">
+                                    <img class="img-thumbnail" src="{% static item.get_avatar_url %}" alt="#">
+                                    <h5>{{ item.name }}</h5>
+                                    {% if item.favorite %}
+                                        <p>favorite</p>
+                                    {% else %}
+                                        <a class="btn btn-sm btn-primary pet-button" data-action="set_favorite" data-itemid="{{item.id}}" href="#">make favorite</a>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="row mb-3 border border-dark rounded">
+                        <div class="col p-3">
+                            <h4>Your Shop</h4>
+                            <div class="row row-cols-1 row-cols-md-2 g-8 mt-1 p-3">
+                                {% for item in shop %}
+                                    <div class="inventory-item col border border-dark text-dark bg-light rounded p-2 me-1">
+                                        <img class="img-thumbnail" src="{% static item.item.item.get_avatar_url %}" alt="#">
+                                        <h5>{{item.item.item.name}}</h5>
+                                        <p>{{item.item.item.description}}</p>
+                                 
+                           
+                                        <div class="row mb-2">
+                                            <div class="col-sm-6">
+                                                <label for="salePrice" class="form-label">sale price</label>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <input data-itemid="{{item.id}}" {% if item.in_market %}disabled{% endif %} data-action="update_price" class="shop-amount-input form-control form-control-sm" id="salePrice" type="number" value="{{item.amount}}">
+                                            </div>
+                                            
+                                            
+                                          </div>
+                                        <div class="form-check mb-4">
+                                            <input data-itemid="{{item.id}}" {% if item.in_market %}checked{% endif %}  data-action="market_toggle" class="form-check-input shop-market-toggle" type="checkbox" value="" id="flexCheckDefault">
+                                            <label class="form-check-label" for="flexCheckDefault">
+                                              on the market
+                                            </label>
+                                        </div>
+                                        {% if not item.in_market %}
+                                            <a class="btn btn-sm btn-primary move-to-inventory-btn move-btn" data-action="move_to_inventory" data-itemId="{{item.item.id}}" href="#">remove from shop</a>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endblock dash %}
+    </div>
+   
+{% endblock content %}
+
+{% block inline_javascript %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Find all elements with the "move-to-shop-btn" class
+    var moveButtons = document.querySelectorAll(".move-btn")
+    var shopamountinputs = document.querySelectorAll(".shop-amount-input")
+    var shopmarkettoggle = document.querySelectorAll(".shop-market-toggle")
+    var petButtons = document.querySelectorAll(".pet-button")
+
+    petButtons.forEach(function (button) {
+        button.addEventListener("click", function(e) {
+            e.preventDefault() 
+            var petItemID = this.dataset.itemid 
+            var xhr = new XMLHttpRequest() 
+            xhr.open("POST", "{% url 'pets:pet-manager' %}")
+            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}")
+            var action = this.dataset.action 
+            var data = JSON.stringify({
+                action: action,
+                item_id: petItemID
+            })
+            xhr.onload = function () {
+                if (xhr.status == 200) {
+                    var response = JSON.parse(xhr.responseText)
+                    if (response.error) {
+                        console.error(response.error)
+                    } else {
+                        console.log(response.message)
+                    }
+                    location.reload()
+                } else {
+                    console.error("Request failed with status: " + xhr.status)
+                }
+            }
+            xhr.onerror = function () {
+                console.error("Request failed");
+            }
+            xhr.send(data)
+        })
+    })
+
+    shopmarkettoggle.forEach(function (input) {
+        input.addEventListener("change", function(e) {
+            e.preventDefault()
+            var shopItemID = this.dataset.itemid
+            var xhr = new XMLHttpRequest()
+            xhr.open("POST", "{% url 'dashboard:shop-manager' %}")
+            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}")
+            var action = this.dataset.action
+            var togglevalue = false
+            if (this.checked) {
+                togglevalue = true
+            }
+            var data = JSON.stringify({
+                action: action,
+                item_id: shopItemID,
+                togglevalue: togglevalue
+            })
+            
+            xhr.onload = function () {
+                if (xhr.status == 200) {
+                    var response = JSON.parse(xhr.responseText)
+                    
+                    if (response.error) {
+                        console.error(response.error);
+                    } else {
+                        console.log(response.message);
+                    }
+
+                    location.reload()
+                } else {
+                    console.error("Request failed with status: " + xhr.status)
+                }
+            }
+            xhr.onerror = function () {
+                console.error("Request failed");
+            }
+            xhr.send(data)
+        })
+    })
+    
+    shopamountinputs.forEach(function (input) {
+        input.addEventListener("blur", function(e) {
+            e.preventDefault()
+            var shopItemID = this.dataset.itemid
+            var xhr = new XMLHttpRequest()
+
+            xhr.open("POST", "{% url 'dashboard:shop-manager' %}")
+
+            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}")
+
+            var action = this.dataset.action
+
+            var data = JSON.stringify({
+                action: action,
+                item_id: shopItemID,
+                amount: parseInt(this.value)
+            })
+            
+            xhr.onload = function () {
+                if (xhr.status == 200) {
+                    var response = JSON.parse(xhr.responseText)
+                    
+                    if (response.error) {
+                        console.error(response.error);
+                    } else {
+                        console.log(response.message);
+                    }
+
+                    location.reload()
+                } else {
+                    console.error("Request failed with status: " + xhr.status);
+                }
+            }
+
+            xhr.onerror = function () {
+                console.error("Request failed");
+            };
+
+            // Send the request with the data
+            xhr.send(data);
+        })
+    })
+
+    // Add a click event listener to each "Move to Shop" button
+    moveButtons.forEach(function (button) {
+        button.addEventListener("click", function (e) {
+            e.preventDefault()
+
+            var itemID = this.dataset.itemid
+
+            // Create a new XMLHttpRequest object
+            var xhr = new XMLHttpRequest();
+
+            // Set up the POST request
+            xhr.open("POST", "{% url 'dashboard:shop-manager' %}", true);
+
+            // Add the CSRF token to the request header
+            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+            var action = this.dataset.action
+            // Define the data to send in the request
+            var data = JSON.stringify({
+                action: action,
+                item_id: parseInt(itemID)
+            });
+
+            // Define the success callback function
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    location.reload()
+                    if (response.error) {
+                        // Handle error, display an error message, etc.
+                        console.error(response.error);
+                    } else {
+                        // Item moved to shop successfully, update the UI or show a success message
+                        console.log(response.message);
+                        // You can remove the item from the inventory UI here if needed
+                    }
+                } else {
+                    // Handle non-200 HTTP status codes here
+                    console.error("Request failed with status: " + xhr.status);
+                }
+            };
+
+            // Define the error callback function
+            xhr.onerror = function () {
+                console.error("Request failed");
+            };
+
+            // Send the request with the data
+            xhr.send(data);
+        });
+    });
+});
+
+// Function to retrieve the CSRF token from cookies
+function getCookie(name) {
+    var value = "; " + document.cookie;
+    var parts = value.split("; " + name + "=");
+    if (parts.length === 2) return parts.pop().split(";").shift();
+}
+</script>
+{% endblock inline_javascript %}

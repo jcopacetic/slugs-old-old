@@ -1,0 +1,24 @@
+{% extends '../dashboard/dashboard.html' %}
+
+{% block dash %}
+<h1>World</h1>
+<div class="container px-4">
+    <div class="row row-cols-md-3 g-5 bg-dark text-light mt-5 mb-5 pt-5 p-5">
+        <a class="col text-center rounded bg-primary border p-4 text-light" href="{% url 'world:shop' %}">
+            <h3>Shop</h3>
+        </a>
+        <div class="col text-center rounded bg-primary border p-4">
+            <h3>Battle</h3>
+        </div>
+        <div class="col text-center rounded bg-primary border p-4">
+            <h3>Leader Boards</h3>
+        </div>
+        <div class="col text-center rounded bg-primary border p-4">
+            <h3>Home</h3>
+        </div>
+    </div>
+</div>
+
+{% endblock dash %}
+
+{% block inline_javascript %}{% endblock inline_javascript %}
